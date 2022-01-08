@@ -1,0 +1,30 @@
+with SUM_OF_SALES as(
+    select month, prod, sum(quant) as SUM_Q
+	from sales
+	group by month, prod
+),
+
+MIN_MAX as(
+	select SUM_OF_SALES.month, max(SUM_OF_SALES.SUM_Q) as MOST_TOTAL_Q, min(SUM_OF_SALES.SUM_Q) as LEAST_TOTAL_Q
+	from SUM_OF_SALES
+	group by SUM_OF_SALES.month
+),
+
+MOST_POP as(
+	select SUM_OF_SALES.month, SUM_OF_SALES.prod as MOST_POPULAR_PROD, MIN_MAX.MOST_TOTAL_Q as MOST_POP_TOTAL_Q
+	from SUM_OF_SALES
+	join MIN_MAX
+	on SUM_OF_SALES.month = MIN_MAX.month and SUM_OF_SALES.SUM_Q = MIN_MAX.MOST_TOTAL_Q
+),
+
+LEAST_POP as(
+	select SUM_OF_SALES.month, SUM_OF_SALES.prod as LEAST_POPULAR_PROD, MIN_MAX.LEAST_TOTAL_Q as LEAST_POP_TOTAL_Q
+	from SUM_OF_SALES
+	join MIN_MAX
+	on SUM_OF_SALES.month = MIN_MAX.month and SUM_OF_SALES.SUM_Q = MIN_MAX.LEAST_TOTAL_Q
+)
+
+select MOST_POP.month, MOST_POP.MOST_POPULAR_PROD, MOST_POP.MOST_POP_TOTAL_Q, LEAST_POP.LEAST_POPULAR_PROD, LEAST_POP.LEAST_POP_TOTAL_Q
+from MOST_POP join LEAST_POP
+on MOST_POP.month = LEAST_POP.month
+order by month
