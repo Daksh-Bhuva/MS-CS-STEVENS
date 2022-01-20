@@ -1,0 +1,64 @@
+---
+title: 'HW_06_6.2_RF: Random Forest methodology on breast-cancer-wisconsin dataset'
+author: 'Daksh Bhuva | CWID: 10475468'
+date: "11/15/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+### Preparing the dataset
+```{r}
+# Loading the dataset and convert '?' into NA 
+data = read.csv("/Users/dakshbhuva/Desktop/CS-513 KDD/breast-cancer-wisconsin.csv", na.strings = "?")
+
+# Removing the missing values
+data<- na.omit(data)
+
+# Removing the column 'Sample' as it is not required
+data<-data[-1]
+
+# Column 'Class' as a factor of 'benign' and 'malignant'
+data$Class <-factor(data$Class)
+```
+
+### Splitting the dataset into training and test data
+```{r}
+idx<-sort(sample(nrow(data),as.integer(.70*nrow(data))))
+
+training<-data[idx,]
+test<-data[-idx,]
+```
+
+### Installing package to implement Random Forest methodology 
+```{r}
+#install.packages('randomForest')
+
+library(randomForest)
+```
+
+### Implementing Random Forest methodology
+```{r}
+fit <- randomForest(Class~., data=training, importance=TRUE, ntree=1000)
+RF_predict <- predict(fit, test)  
+```
+
+### Identifying and plotting important features
+```{r}  
+importance(fit)
+varImpPlot(fit, main = "Dotchart of variable importance")
+```
+
+### Frequency table for predictions
+```{r}
+table(actual=test[,10],RF_predict)
+```
+
+### Calculating the error rate
+```{r}
+# Number of wrong predictions
+wrong<- (test$Class!=RF_predict)
+# Error Rate in prediction of Random Forest
+error_rate<-sum(wrong)/length(test$Class)
+  
+print(paste("Error Rate:" , error_rate))
+```
