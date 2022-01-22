@@ -1,0 +1,50 @@
+---
+title: 'HW_08_8.2_kmeans: kmeans cluster methodology on breast-cancer-wisconsin dataset'
+author: 'Daksh Bhuva | CWID: 10475468'
+date: "11/22/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+### Preparing the dataset
+```{r}
+# Loading the dataset and convert '?' into NA 
+data = read.csv("/Users/dakshbhuva/Desktop/CS-513 KDD/wisc_bc_ContinuousVar.csv", na.strings = "?")
+
+# Remove the missing values
+data<- na.omit(data)
+
+# Removing the column 'id' as it is not required
+data<-data[-1]
+```
+
+### Implementing kmeans methodology
+```{r}
+# ?kmeans
+kmeans_2<- kmeans(data[,-1],2,nstart = 10)
+```
+
+### Cluster to which each point is allocated
+```{r}
+kmeans_2$cluster
+```
+
+### Matrix of cluster centres
+```{r}
+kmeans_2$centers
+```
+
+### Frequency table for predictions
+```{r}
+table(kmeans_2$cluster,data[,1])
+```
+
+### Package to plot the clusters
+```{r}
+library(fpc)
+```
+
+### Plotting the clusters
+```{r}
+plotcluster(data[,-1], kmeans_2$cluster)
+```
