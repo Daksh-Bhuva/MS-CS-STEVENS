@@ -1,0 +1,60 @@
+---
+title: 'HW_09_SVM: SVM methodology on breast-cancer-wisconsin dataset'
+author: 'Daksh Bhuva | CWID: 10475468'
+date: "12/6/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+### Preparing the dataset
+```{r}
+# Loading the dataset and convert '?' into NA 
+data = read.csv("/Users/dakshbhuva/Desktop/CS-513 KDD/wisc_bc_ContinuousVar.csv", na.strings = "?")
+
+# Removing the missing values
+data<- na.omit(data)
+
+# Removing the column 'Sample' as it is not required
+data<-data[-1]
+
+# Factoring the column 'diagnosis'
+data$diagnosis <-factor(data$diagnosis)
+```
+
+### Splitting the dataset into training and test data
+```{r}
+idx<-sort(sample(nrow(data),as.integer(.70*nrow(data))))
+
+training<-data[idx,]
+test<-data[-idx,]
+```
+
+### Installing package to implement SVM methodology 
+```{r}
+#install.packages('e1071')
+
+library(e1071)
+```
+
+### Implementing SVM methodology
+```{r}
+# ?svm
+svm.model <- svm(diagnosis ~., data = training)
+svm.pred <- predict(svm.model, test) 
+```
+
+### Frequency table for predictions
+```{r}
+table(actual=test$diagnosis, svm.pred)
+```
+
+### Calculating the error rate
+```{r}
+# Number of wrong predictions
+SVM_wrong<- (test$diagnosis!=svm.pred)
+# Error Rate in prediction of SVM
+rate<-sum(SVM_wrong)/length(SVM_wrong)
+  
+print(paste("Error Rate:" , rate))
+```
