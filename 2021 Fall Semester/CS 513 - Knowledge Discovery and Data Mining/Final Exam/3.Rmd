@@ -1,0 +1,45 @@
+---
+title: 'Problem 3: K-means cluster methodology'
+author: 'Daksh Bhuva | CWID: 10475468'
+date: "12/15/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+### Preparing the dataset
+```{r}
+# Loading the dataset and convert '?' into NA 
+data <- read.csv('/Users/dakshbhuva/Desktop/CS-513 KDD/Final Exam/3 & 4_Dataset.csv')
+```
+
+### Implementing K-means cluster methodology
+```{r}
+# ?kmeans
+kmeans_2<- kmeans(data[,-1],2)
+```
+
+### Cluster to which each point is allocated
+```{r}
+kmeans_2$cluster
+```
+
+### Cluster Assignment table
+```{r}
+table(kmeans_2$cluster,data[,1])
+```
+
+### Coordinates for Cluster Centers
+```{r}
+kmeans_2$centers
+```
+
+### Package to plot the clusters
+```{r}
+library(fpc)
+```
+
+### Plotting the clusters
+```{r}
+plotcluster(data[,-1], kmeans_2$cluster)
+```

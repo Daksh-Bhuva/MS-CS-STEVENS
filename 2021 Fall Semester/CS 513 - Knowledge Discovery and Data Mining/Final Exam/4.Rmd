@@ -1,0 +1,57 @@
+---
+title: 'Problem 4: Hierarchical cluster methodology'
+author: 'Daksh Bhuva | CWID: 10475468'
+date: "12/15/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+### Preparing the dataset
+```{r}
+# Loading the dataset and convert '?' into NA 
+data <- read.csv('/Users/dakshbhuva/Desktop/CS-513 KDD/Final Exam/3 & 4_Dataset.csv')
+```
+
+### Implementing Hierarchical cluster methodology
+```{r}
+# Distance Matrix Computation
+bcw_dist <- dist(data[,-1])
+# Hierarchical Clustering
+hclust_resutls<-hclust(bcw_dist)
+```
+
+### Cluster Dendogram
+```{r}
+plot(hclust_resutls)
+```
+
+### Cutting the Tree into 2 Clusters
+```{r}
+hclust_2<-cutree(hclust_resutls,2)
+```
+
+### Cluster Assignment table
+```{r}
+table(hclust_2,data[,1])
+```
+
+### Package to find the Clusters Centers
+```{r}
+library(rattle)
+```
+
+### Coordinates for Cluster Centers
+```{r}
+centers.hclust(data[-1], hclust_resutls, nclust = 2)
+```
+
+### Package to plot the clusters
+```{r}
+library(fpc)
+```
+
+### Plotting the clusters
+```{r}
+plotcluster(data[,-1], hclust_2)
+```
